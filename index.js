@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://pocket-gadget-admin-panel:<password>@pocket-gadget.un9wa.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@pocket-gadget.un9wa.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 client.connect(err => {
     const collection = client.db("test").collection("devices");
