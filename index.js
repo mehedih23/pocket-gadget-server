@@ -20,19 +20,50 @@ async function run() {
         await client.connect();
         const pocketGadgetCollection = client.db('pocket-gadget-store').collection('products');
 
+        // Get the 6 product //
         app.get('/products', async (req, res) => {
+            console.log(res)
             const query = {};
             const cursor = pocketGadgetCollection.find(query);
             const result = await cursor.limit(6).toArray();
             res.send(result);
         })
 
+        // get all products //
+        app.get('/allproducts', async (req, res) => {
+            console.log(res)
+            const query = {};
+            const cursor = pocketGadgetCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        // Get the product details //
         app.get('/product/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const product = await pocketGadgetCollection.findOne(query);
             res.send(product);
         })
+
+        // Update product //
+        app.put('/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const update = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateQuantity = {
+                $set: {
+                    quantity: update.itemQuantity
+                },
+            };
+            const result = await pocketGadgetCollection.updateOne(filter, updateQuantity, options);
+            res.send(result);
+        })
+
+
+
+
     }
     finally {
         // await client.close();
