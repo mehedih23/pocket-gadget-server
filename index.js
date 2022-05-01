@@ -31,10 +31,33 @@ async function run() {
 
         // get all products //
         app.get('/allproducts', async (req, res) => {
-            console.log(res)
             const query = {};
             const cursor = pocketGadgetCollection.find(query);
             const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        // Add product info to the inventory //
+        app.post('/allproducts', async (req, res) => {
+            const item = req.body;
+            const doc = {
+                name: item.name,
+                price: item.price,
+                image: item.image,
+                company: item.company,
+                quantity: item.quantity,
+                email: item.email,
+                description: item.description,
+            };
+            const result = await pocketGadgetCollection.insertOne(doc);
+            res.send(result);
+        })
+
+        // Delete a product //
+        app.delete('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await pocketGadgetCollection.deleteOne(query);
             res.send(result);
         })
 
