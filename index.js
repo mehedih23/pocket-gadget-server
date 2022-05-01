@@ -35,6 +35,24 @@ async function run() {
             const cursor = pocketGadgetCollection.find(query);
             const result = await cursor.toArray();
             res.send(result);
+        });
+
+        // Get product by email //
+        app.get('/myproducts', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const cursor = pocketGadgetCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        // Delete item from single user //
+        // Delete a product //
+        app.delete('/myproducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await pocketGadgetCollection.deleteOne(query);
+            res.send(result);
         })
 
         // Add product info to the inventory //
