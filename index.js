@@ -22,7 +22,6 @@ async function run() {
 
         // Get the 6 product //
         app.get('/products', async (req, res) => {
-            console.log(res)
             const query = {};
             const cursor = pocketGadgetCollection.find(query);
             const result = await cursor.limit(6).toArray();
