@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
 require('dotenv').config()
+const jwt = require('jsonwebtoken');
 
 app.use(cors());
 app.use(express.json());
@@ -38,11 +39,19 @@ async function run() {
 
         // Get product by email //
         app.get('/myproducts', async (req, res) => {
+            const em = req;
+            console.log(em)
             const email = req.query.email;
+            // console.log(email);
+            // if (email === decodedEmail) {
             const query = { email: email };
             const cursor = pocketGadgetCollection.find(query);
             const result = await cursor.toArray();
             res.send(result);
+            // }
+            // else {
+            //     res.status(403).send({ message: 'forbidden access' })
+            // }
         });
 
         // Delete item from single user //
@@ -99,6 +108,13 @@ async function run() {
             };
             const result = await pocketGadgetCollection.updateOne(filter, updateQuantity, options);
             res.send(result);
+        })
+
+        // secure api with jwt token //
+        app.post('/login', async (req, res) => {
+            const user = req.body.email;
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN);
+            res.send({ accessToken });
         })
 
 
