@@ -39,19 +39,18 @@ async function run() {
 
         // Get product by email //
         app.get('/myproducts', async (req, res) => {
-            const em = req;
-            console.log(em)
+            const token = req.headers.authorization;
             const email = req.query.email;
-            // console.log(email);
-            // if (email === decodedEmail) {
-            const query = { email: email };
-            const cursor = pocketGadgetCollection.find(query);
-            const result = await cursor.toArray();
-            res.send(result);
-            // }
-            // else {
-            //     res.status(403).send({ message: 'forbidden access' })
-            // }
+            const decodedEmail = verifyJwt(token);
+            if (email === decodedEmail) {
+                const query = { email: email };
+                const cursor = pocketGadgetCollection.find(query);
+                const result = await cursor.toArray();
+                res.send(result);
+            }
+            else {
+                res.send({ message: 'Unauthorized Access! Please Provide Correct Information when login' })
+            }
         });
 
         // Delete item from single user //
@@ -131,3 +130,17 @@ run().catch(console.dir);
 app.listen(port, () => {
     console.log('Your Server is running and the port is http://localhost:', port)
 })
+
+// Verify jwt //
+const verifyJwt = (token) => {
+    let email;
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+        if (err) {
+            email = 'Invalid User'
+        }
+        if (decoded) {
+            email = decoded;
+        }
+    });
+    return email;
+}
