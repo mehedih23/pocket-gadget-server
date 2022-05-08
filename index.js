@@ -20,12 +20,21 @@ async function run() {
     try {
         await client.connect();
         const pocketGadgetCollection = client.db('pocket-gadget-store').collection('products');
+        const TopCollection = client.db('pocket-gadget-store').collection('topProducts');
 
         // Get the 6 product //
         app.get('/products', async (req, res) => {
             const query = {};
             const cursor = pocketGadgetCollection.find(query);
             const result = await cursor.limit(6).toArray();
+            res.send(result);
+        });
+
+        // Get Top products //
+        app.get('/top-products', async (req, res) => {
+            const query = {};
+            const cursor = TopCollection.find(query);
+            const result = await cursor.toArray();
             res.send(result);
         })
 
